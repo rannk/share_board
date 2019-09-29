@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Share Board</title>
+    <script src="js/jquery.js"></script>
+    <script src="js/jquery_date.js"></script>
+</head>
+<style>
+    html, body{
+        height: 100%;
+        margin: 0;
+    }
+    #panel {
+        border: solid;
+        border-width: thin;
+        border-color: gainsboro;
+        height: 99%;
+        max-width: 500px;
+        position: relative;
+        word-wrap:break-word;
+        word-break:break-all;
+    }
+
+    #operation {
+        height: 30px;
+        position: absolute;
+        z-index: 999;;
+        width: 100%;
+        background-color: #ffffff;
+    }
+    #panel ul {
+        position: absolute;
+        bottom: 30px;
+        padding: 0;
+        padding-right: 10px;
+        padding-left: 10px;
+        margin: 0;
+    }
+    #panel li {
+        list-style-type:none;
+        padding-top: 13px;
+
+    }
+
+    #panel li span{
+        display: block;
+    }
+
+    .time{
+        font-size: 13px;
+        color: darkgray;
+    }
+
+    .message {
+        font-size: 16px;
+    }
+
+    #input {
+        position: absolute;
+        bottom: 0;
+        height: 30px;
+    }
+
+    input[type='button'] {
+        height:30px;
+        background-color: steelblue;
+        color: #ffffff;
+    }
+    input[type='text'] {
+        height: 24px;
+        padding-left: 5px;
+    }
+</style>
+
+<body>
+<div id="panel">
+    <div id="operation">
+        <span> <input type="button" value="refresh" id="refresh" /></span>
+        <span> <input type="button" value="images" id="images" /></span>
+        <span> <input type="button" value="files" id="files" /></span>
+    </div>
+    <ul>
+    </ul>
+    <div id="input">
+        <input type="text" id="input_content">
+        <input type="button" value="Send" id="send" style="width: 50px" />
+        <input type="button" value="File" id="file" style="width: 50px" />
+    </div>
+</div>
+</body>
+<script>
+
+    $("#input_content").width($("#panel").width() - 120);
+
+    var this_w_height = window.innerHeight;
+
+    $(document).keyup(function(event){
+        if(event.keyCode ==13){
+            $("#send").click();
+        }
+    });
+
+    $("#send").bind("click",function(){
+        $.ajax({
+            type : "POST",
+            url : "/receive.php",
+            data : {
+                input_content:$("#input_content").val()
+            },
+            success : function(result) {
+                $("#input_content").val("");
+                var time = $("#panel li:nth-last-child(1)").attr("time");
+                if(time) {
+                    getData(time);
+                }
+            },
+            error : function(e){
+                console.log(e.status);
+                console.log(e.responseText);
+            }
+        });
+    });
+    
+    $("#refresh").bind("click", function () {
+        var time = $("#panel li:nth-last-child(1)").attr("time");
+        getData(time);
+    });
+
+    function getData(time) {
+        $.ajax({
+            type : "POST",
+            url : "/data.php",
+            data : {
+                time:time
+            },
+            dataType:"json",
+            success : function(data) {
+                if(data.status == "1") {
+                    for(index in data.data) {
+                        var d = data.data[index];
+                        $("#panel ul").append('<li time="'+d.time+'"><span class="time">'+$.myTime.UnixToDate(d.time, true)+'</span><span class="message">'+d.content+'</span></li>');
+                    }
+
+                    if($("#panel ul").height()>this_w_height-70) {
+                        $("#panel ul").height(this_w_height-70);
+                        $("#panel ul").css("overflow", "scroll");
+                    }
+
+                    $("#panel ul").scrollTop($("#panel ul").prop("scrollHeight"));
+                }
+            },
+            error : function(e){
+                console.log(e.status);
+                console.log(e.responseText);
+            }
+        });
+    }
+
+    getData();
+</script>
+</html>

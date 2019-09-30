@@ -40,13 +40,20 @@
                 var time = new Date(unixTime * 1000);
                 var ymdhis = "";
                 ymdhis += time.getUTCFullYear() + "-";
-                ymdhis += (time.getUTCMonth()+1) + "-";
-                ymdhis += time.getUTCDate();
+                ymdhis += addZeor((time.getUTCMonth()+1)) + "-";
+                ymdhis += addZeor(time.getUTCDate());
                 if (isFull === true)
                 {
-                    ymdhis += " " + time.getUTCHours() + ":";
-                    ymdhis += time.getUTCMinutes() + ":";
-                    ymdhis += time.getUTCSeconds();
+                    ymdhis += " " + addZeor(time.getUTCHours()) + ":";
+                    ymdhis += addZeor(time.getUTCMinutes()) + ":";
+                    ymdhis += addZeor(time.getUTCSeconds());
+                }
+
+                function addZeor(str) {
+                    if(str < 10) {
+                        return "0" + str.toString();
+                    }
+                    return str;
                 }
                 return ymdhis;
             }

@@ -140,11 +140,12 @@
                 if(data.status == "1") {
                     for(index in data.data) {
                         var d = data.data[index];
-                        $("#panel ul").append('<li time="'+d.time+'"><span class="time">'+$.myTime.UnixToDate(d.time, true)+'</span><span class="message">'+d.content+'</span></li>');
+                        $("#panel ul").append('<li time="'+d.time+'"><span class="time">'+$.myTime.UnixToDate(d.time, true, 8)+'</span><span class="message">'+d.message+'</span></li>');
                     }
 
                     if($("#panel ul").height()>this_w_height-70) {
                         $("#panel ul").height(this_w_height-70);
+                        $("#panel ul").width($("#panel").width()-20);
                         $("#panel ul").css("overflow", "scroll");
                     }
 
@@ -157,6 +158,39 @@
             }
         });
     }
+
+    $("#panel ul").scroll(function(){
+        if($("#panel ul").scrollTop() == 0) {
+            $.ajax({
+                type : "POST",
+                url : "/data.php",
+                data : {
+                    time:$("#panel li:nth-child(1)").attr("time"),
+                    before: true
+                },
+                dataType:"json",
+                success : function(data) {
+                    if(data.status == "1") {
+                        for(index in data.data) {
+                            var d = data.data[index];
+                            $("#panel ul").prepend('<li time="'+d.time+'"><span class="time">'+$.myTime.UnixToDate(d.time, true, 8)+'</span><span class="message">'+d.message+'</span></li>');
+                        }
+
+                        if($("#panel ul").height()>this_w_height-70) {
+                            $("#panel ul").height(this_w_height-70);
+                            $("#panel ul").width($("#panel").width()-20);
+                            $("#panel ul").css("overflow", "scroll");
+                        }
+
+                    }
+                },
+                error : function(e){
+                    console.log(e.status);
+                    console.log(e.responseText);
+                }
+            });
+        }
+    });
 
     getData();
 </script>

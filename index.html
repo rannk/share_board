@@ -191,7 +191,9 @@
                 return xhr;
             },
             success : function(result) {
-                console.log(result);
+                $("#input_content").val("");
+                var time = $("#panel li:nth-last-child(1)").attr("time");
+                getData(time);
                 $("#progress_layout").hide();
                 $('#progress > div').css('width', 0);
             },

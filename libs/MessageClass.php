@@ -28,17 +28,22 @@ class MessageClass
         $r = array();
         if($before) {
             for($i=0;$i<count($rt);$i++) {
-                $rt[$i]['message'] = addAtagForLink(urldecode($rt[$i]['message']));
+                $rt[$i]['message'] = $this->formatMsg(urldecode($rt[$i]['message']));
                 $r = $rt;
             }
         }else {
             $number = count($rt)-1;
             for($i=$number;$i>=0;$i--) {
-                $rt[$i]['message'] = addAtagForLink(urldecode($rt[$i]['message']));
+                $rt[$i]['message'] = $this->formatMsg(urldecode($rt[$i]['message']));
                 $r[] = $rt[$i];
             }
         }
         $db->close();
         return $r;
+    }
+
+    public function formatMsg($message) {
+        $message = turnFileToLink($message);
+        return addAtagForLink($message);
     }
 }

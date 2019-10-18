@@ -35,7 +35,7 @@ EOF;
         $this->exec($sql);
     }
 
-    public function saveMessage($message, $id="") {
+    public function saveMessage($message, $type="text", $id="") {
         $id = ceil($id);
         $message = addslashes($message);
 

@@ -23,6 +23,19 @@
         word-break:break-all;
     }
 
+    #progress_layout {
+        position: fixed;
+        bottom: 8px;
+        background-color: #ffffff;
+        padding: 30px;
+        height: 150px;
+        max-width: 500px;
+        border: solid;
+        border-width: thin;
+        border-color: gainsboro;
+        left:10px;
+        display: none;
+    }
     #operation {
         height: 30px;
         position: absolute;
@@ -72,6 +85,22 @@
         height: 24px;
         padding-left: 5px;
     }
+
+    #progress {
+        width: 400px;
+        height: 10px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        margin: 10px 0px;
+        overflow: hidden;
+        margin-top: 40px;
+    }
+    #progress > div {
+        width: 0px;
+        height: 100%;
+        background-color: yellowgreen;
+        transition: all .3s ease;
+    }
 </style>
 
 <body>
@@ -90,6 +119,13 @@
     </div>
 </div>
 <input type="file" id="file" style="display: none;" multiple="multiple" onchange="uploadFile()">
+<div id="progress_layout">
+    <div>File uploading</div>
+    <div id="progress">
+        <div></div>
+    </div>
+</div>
+
 </body>
 <script>
 
@@ -144,9 +180,22 @@
             data: formData,
             processData: false,
             contentType: false,
-            success : function(result) {
-                console.log(result);
+            xhr: function() {
+                var xhr = new XMLHttpRequest();
+                xhr.upload.addEventListener('progress', function (e) {
+                    var progressRate = (e.loaded / e.total) * 100 + '%';
+                    $("#progress_layout").show();
+                    $('#progress > div').css('width', progressRate);
+                })
 
+                return xhr;
+            },
+            success : function(result) {
+                $("#input_content").val("");
+                var time = $("#panel li:nth-last-child(1)").attr("time");
+                getData(time);
+                $("#progress_layout").hide();
+                $('#progress > div').css('width', 0);
             },
             error : function(e){
                 console.log(e.status);

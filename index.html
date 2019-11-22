@@ -321,7 +321,7 @@
             dataType: "json",
             success: function (data) {
                 if (data.status == "1") {
-                    $("#settings").hide();
+                    $("#settings").floatDiv("#settings", "hide");
                     $("#tag_value").val(data.value);
                     $('#tag_value').selectize()[0].selectize.destroy();
                     $('#tag_value').selectize({
@@ -468,7 +468,7 @@
                             $("#cont_message").width($("#panel").width()-20);
                             $("#cont_message").css("overflow", "scroll");
                         }
-
+                        setEvent();
                     }
                 },
                 error : function(e){
@@ -482,10 +482,9 @@
     function setEvent() {
         var timeout;
         var settings_show = false;
-        $("#cont_message li").unbind("onmousedown");
+        $("#cont_message li").unbind();
         $("#cont_message li").mousedown(function (e) {
             if(e.button == 2) {
-                console.log("2");
                 $("#cont_message li .message").removeClass("active");
                 var msg = $(this).find(".message");
                 msg.addClass("active");

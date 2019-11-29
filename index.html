@@ -321,7 +321,7 @@
             dataType: "json",
             success: function (data) {
                 if (data.status == "1") {
-                    $("#settings").floatDiv("#settings", "hide");
+                    $("#settings").floatDiv("hide");
                     $("#tag_value").val(data.value);
                     $('#tag_value').selectize()[0].selectize.destroy();
                     $('#tag_value').selectize({
@@ -488,7 +488,7 @@
                 $("#cont_message li .message").removeClass("active");
                 var msg = $(this).find(".message");
                 msg.addClass("active");
-                msg.floatDiv("#settings", "show");
+                $("#settings").floatDiv("show", msg);
                 $("#settings").attr("data_id", $(this).attr("data_id"));
             }
         })
@@ -502,7 +502,7 @@
                     $("#cont_message li .message").removeClass("active");
                     var msg = li_this.find(".message");
                     msg.addClass("active");
-                    msg.floatDiv("#settings", "show");
+                    $("#settings").floatDiv("show", msg);
                     $("#settings").attr("data_id", li_this.attr("data_id"));
                 }, 500);
                 //长按400毫秒
